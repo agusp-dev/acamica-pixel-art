@@ -24,6 +24,33 @@ var nombreColores = ['White', 'LightYellow',
 // Es decir, el que se elige con la rueda de color.
 var colorPersonalizado = document.getElementById('color-personalizado');
 
+var paleta = document.getElementById('paleta');
+var grillaPixeles = document.getElementById('grilla-pixeles');
+
+
+jQuery(document).ready(function(){
+  console.log('Dom cargado');
+  crearPaletaColores();
+
+});
+
+
+
+
+
+function crearPaletaColores() {
+  if (nombreColores != null && nombreColores.length > 0) {
+    var colorDiv;
+    for (var i = 0; i < nombreColores.length; i++) {
+      
+      colorDiv = document.createElement('div');
+      colorDiv.style.backgroundColor = nombreColores[i];
+      colorDiv.className = 'color-paleta';
+      paleta.appendChild(colorDiv);
+    }
+  }
+}
+
 colorPersonalizado.addEventListener('change', 
   (function() {
     // Se guarda el color de la rueda en colorActual
