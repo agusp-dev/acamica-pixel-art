@@ -49,7 +49,7 @@ ul {
 }
 p {
   text-transform: uppercase;
-  font-size: .3em;
+  font-size: .6em;
   text-align: right;
 }
 h1 {
@@ -170,6 +170,8 @@ img {
   margin-top: 15px;
   background-color: black;
 }
+
+
 
 @media only screen and (max-width: 1060px) {
   main {
