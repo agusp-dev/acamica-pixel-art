@@ -23,47 +23,31 @@ var nombreColores = ['White', 'LightYellow',
 // Variable para guardar el elemento 'color-personalizado'
 // Es decir, el que se elige con la rueda de color.
 var colorSeleccionado = null;
+
+//Variable para determinar cuando el mouse esta presionado
 var mousePresionado = false;
 
+//Variable para determinar si el dibujo todavia no se guardo
+var necesitaGuardar = false;
 
 jQuery(document).ready(function(){
-  console.log('Dom cargado');
-
   crearPaletaColores();
-  //crearGrillaPixeles();
-  //crearEventos();
+  crearGrillaPixeles();
+  crearEventos();
 });
-
-
-
-
 
 function crearPaletaColores() {
   if (nombreColores != null && nombreColores.length > 0) {
-    var $paleta = $('#paleta');
-    //var paleta = document.getElementById('paleta');
+    var paleta = document.getElementById('paleta');
     var colorDiv;
     for (var i = 0; i < nombreColores.length; i++) {
-
-      $paleta.add('div').css({'background-color': 'red'}).addClass('color-paleta');
-
-      //colorDiv = document.createElement('div');
-      //colorDiv.style.backgroundColor = nombreColores[i];
-      //colorDiv.className = 'color-paleta';
-      //$paleta.appendChild(colorDiv);
+      colorDiv = document.createElement('div');
+      colorDiv.style.backgroundColor = nombreColores[i];
+      colorDiv.className = 'color-paleta';
+      paleta.appendChild(colorDiv);
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
 
 function crearGrillaPixeles() {
   var grillaPixeles = document.getElementById('grilla-pixeles');
@@ -73,15 +57,16 @@ function crearGrillaPixeles() {
   }
 }
 
-
 function crearEventos() {
   var colorPersonalizado = document.getElementById('color-personalizado');
   colorPersonalizado.addEventListener('change', function() {
     seleccionarColor(colorPersonalizado.value);
   });
 
+  /**
+   * Click en color de la paleta
+   */
   $('#paleta div').click(function() {
-    console.log('Click en un color de la paleta');
     seleccionarColor(this.style.backgroundColor);
   });
 
@@ -89,7 +74,6 @@ function crearEventos() {
    * Click sobre pixel de la grilla
    */
   $('#grilla-pixeles div').click(function() {
-    console.log('Click en un pixel de la grilla');
     pintarPixel(this);
   });
 
@@ -97,7 +81,6 @@ function crearEventos() {
    * Hover sobre grilla
    */
   $('#grilla-pixeles div').hover(function() {
-    console.log('Hover en un pixel de la grilla');
     if (mousePresionado) {
       pintarPixel(this);
     }
@@ -114,17 +97,14 @@ function crearEventos() {
     presionarMouse(false);
   });
 
-
   /**
    * Botones
    */
   $('#guardar').click(function() {
-    console.log('Click del boton Guardar');
-    //guardarPixelArt();
+    guardarDibujo();
   });
 
   $('#borrar').click(function() {
-    console.log('Click del boton Borrar');
     borrarPixelArt(1000);
   });
 
@@ -132,45 +112,60 @@ function crearEventos() {
    * Imagenes
    */
   $('#batman').click(function() {
-    console.log('Click imagen de Batman');
-    cargarSuperheroe(batman);
+    mostrarSuperheroe(batman);
   });
 
   $('#wonder').click(function() {
-    console.log('Click imagen de Wonder');
-    cargarSuperheroe(wonder);
+    mostrarSuperheroe(wonder);
   });
 
   $('#flash').click(function() {
-    console.log('Click imagen de Flash');
-    cargarSuperheroe(flash);
+    mostrarSuperheroe(flash);
   });
 
   $('#invisible').click(function() {
-    console.log('Click imagen de Invisible');
-    cargarSuperheroe(invisible);
+    mostrarSuperheroe(invisible);
   });
 }
 
-
-
 function seleccionarColor(color) {
-  document.getElementById('indicador-de-color').style.backgroundColor = color;
-  colorSeleccionado = color;
+  $('#indicador-de-color').css('background-color', color);
   $('#indicador-de-color-mensaje').text(color);
+  colorSeleccionado = color;
 }
 
 function pintarPixel(pixel) {
   if (colorSeleccionado != null) {
     pixel.style.backgroundColor = colorSeleccionado;
+    necesitaGuardar = true;
   }
 }
 
 function presionarMouse(presionado) {
-  console.log('Mouse presionado: ' + presionado);
   mousePresionado = presionado;
 }
 
 function borrarPixelArt(duration) {
   $('#grilla-pixeles div').animate({'background-color':'white'}, duration);
+  necesitaGuardar = false;
+}
+
+function mostrarSuperheroe(superheroe) {
+  //Se verifica si hay un dibujo sin guardar
+  if (necesitaGuardar) {
+    var guardar = confirm('Querés guardar tu dibujo antes de empezar otro?');
+    if (guardar) {
+      guardarDibujo();
+    }
+  }
+  cargarSuperheroe(superheroe);
+  necesitaGuardar = true;
+}
+
+function guardarDibujo() {
+  var nombreArchivo = prompt('Con que nombre querés guardar tu dibujo?');
+    if (nombreArchivo != null && nombreArchivo.length > 0) {
+      guardarPixelArt(nombreArchivo);
+      necesitaGuardar = false;
+    }
 }
